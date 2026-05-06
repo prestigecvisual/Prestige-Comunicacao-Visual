@@ -1,7 +1,17 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
-// Dados dos produtos
-const products = [
+interface Product {
+  id: number;
+  sku: string;
+  nome: string;
+  preco: number;
+  descricao: string;
+  imagem: string;
+  categoria: string;
+  badge?: string;
+}
+
+const products: Product[] = [
   { id: 1, sku: "EXP-L-A6-ACR", nome: "Display L A6 - Acrílico", preco: 29.90, descricao: "Display inclinado 75° para cardápios", imagem: "https://placehold.co/400x300/7c3aed/white?text=Display+L+A6", categoria: "Displays", badge: "Mais vendido" },
   { id: 2, sku: "EXP-L-A5-ACR", nome: "Display L A5 - Acrílico", preco: 49.90, descricao: "Display para promoções", imagem: "https://placehold.co/400x300/7c3aed/white?text=Display+L+A5", categoria: "Displays" },
   { id: 3, sku: "URN-CUB-M", nome: "Urna Cubo Média 20cm", preco: 189.90, descricao: "Urna para sorteios com fechamento para cadeado", imagem: "https://placehold.co/400x300/7c3aed/white?text=Urna+Cubo", categoria: "Urnas", badge: "Mais vendido" },
@@ -12,23 +22,22 @@ const products = [
   { id: 8, sku: "TRO-MIX-M", nome: "Troféu Mix Médio", preco: 89.90, descricao: "Troféu multicamadas", imagem: "https://placehold.co/400x300/7c3aed/white?text=Trofeu", categoria: "Troféus" }
 ];
 
-// Componente Principal
 export default function App() {
-  const [cart, setCart] = useState([]);
+  const [cart, setCart] = useState<Product[]>([]);
   const [showCart, setShowCart] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState('todos');
+  const [selectedCategory, setSelectedCategory] = useState<string>('todos');
 
   const categories = ['todos', ...new Set(products.map(p => p.categoria))];
   const filteredProducts = selectedCategory === 'todos' ? products : products.filter(p => p.categoria === selectedCategory);
   const cartCount = cart.length;
   const cartTotal = cart.reduce((sum, item) => sum + item.preco, 0);
 
-  const addToCart = (product) => {
+  const addToCart = (product: Product) => {
     setCart([...cart, product]);
     alert(`✅ ${product.nome} adicionado!`);
   };
 
-  const removeFromCart = (index) => {
+  const removeFromCart = (index: number) => {
     const newCart = [...cart];
     newCart.splice(index, 1);
     setCart(newCart);
