@@ -1,0 +1,38 @@
+md 📁 public/
+   md 📁 images/
+    md 📁 produtos/
+    md 📁 pdv/
+    md 📁 boxes/
+    md 📁 urns/
+    md 📁 chaveiros/
+    md 📁 placas/
+  md 📄 manifest.json
+
+md 📁 src/
+  md 📁 components/
+    md 📁 common/
+    md 📁 layout/
+    md 📁 products/
+    md 📁 pdv/
+    md 📁 boxes/
+    md 📁 urns/
+    md 📁 chaveiros/
+    md 📁 cart/
+    md 📁 auth/
+  md 📁 pages/
+  md 📁 hooks/
+  md 📁 services/
+  md 📁 types/
+  md 📁 data/
+  md 📁 utils/
+  md 📁 contexts/
+
+md 📄 .env
+md 📄 .gitignore
+md 📄 package.json
+md 📄 vite.config.ts
+md 📄 tailwind.config.js
+md 📄 postcss.config.js
+md 📄 tsconfig.json
+md 📄 index.html
+md 📄 README.md

@@ -1,0 +1,55 @@
+import React from 'react'
+import { motion } from 'framer-motion'
+
+function App() {
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+      {/* Navbar simples para teste */}
+      <header className="bg-white shadow-sm">
+        <div className="container-custom py-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="font-display font-bold text-2xl text-primary">Prestige</h1>
+              <p className="text-xs text-gray-500">Comunicação Visual e Gráfica</p>
+            </div>
+            <div className="flex gap-4">
+              <a href="#" className="text-sm hover:text-primary transition">Catálogo</a>
+              <a href="#" className="text-sm hover:text-primary transition">Contato</a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="container-custom py-20">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center max-w-3xl mx-auto"
+        >
+          <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
+            Tags e Chaveiros em Acrílico que <span className="text-primary">impressionam</span>
+          </h1>
+          <p className="text-lg text-gray-600 mb-8">
+            Personalização completa para hotéis, pousadas e empresas. 
+            Acrílico de alta qualidade com impressão e gravação a laser sob medida.
+          </p>
+          <button className="px-8 py-3 bg-primary text-white rounded-full font-semibold hover:bg-primary/90 transition">
+            Ver Catálogo
+          </button>
+        </motion.div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-8 mt-20">
+        <div className="container-custom text-center text-sm">
+          <p>© 2024 Prestige Comunicação Visual e Gráfica. Todos os direitos reservados.</p>
+          <p className="mt-2 text-gray-400">WhatsApp: (11) 92201-8290</p>
+        </div>
+      </footer>
+    </div>
+  )
+}
+
+export default App
