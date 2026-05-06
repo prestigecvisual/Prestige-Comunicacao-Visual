@@ -1,308 +1,112 @@
 import React, { useState } from 'react';
-import { products } from './data/products';
 
-// Componente do Carrinho
-function CartComponent() {
+// Dados dos produtos
+const products = [
+  { id: 1, sku: "EXP-L-A6-ACR", nome: "Display L A6 - Acrílico", preco: 29.90, descricao: "Display inclinado 75° para cardápios", imagem: "https://placehold.co/400x300/7c3aed/white?text=Display+L+A6", categoria: "Displays", badge: "Mais vendido" },
+  { id: 2, sku: "EXP-L-A5-ACR", nome: "Display L A5 - Acrílico", preco: 49.90, descricao: "Display para promoções", imagem: "https://placehold.co/400x300/7c3aed/white?text=Display+L+A5", categoria: "Displays" },
+  { id: 3, sku: "URN-CUB-M", nome: "Urna Cubo Média 20cm", preco: 189.90, descricao: "Urna para sorteios com fechamento para cadeado", imagem: "https://placehold.co/400x300/7c3aed/white?text=Urna+Cubo", categoria: "Urnas", badge: "Mais vendido" },
+  { id: 4, sku: "CHV-RET-2F", nome: "Chaveiro Retangular 2 Faces", preco: 36.00, descricao: "Chaveiro personalizado em acrílico", imagem: "https://placehold.co/400x300/7c3aed/white?text=Chaveiro", categoria: "Chaveiros" },
+  { id: 5, sku: "PLA-AC3-3020", nome: "Placa ACM 30x20cm", preco: 89.90, descricao: "Placa para consultórios", imagem: "https://placehold.co/400x300/7c3aed/white?text=Placa+ACM", categoria: "Placas" },
+  { id: 6, sku: "PUL-AC10-CL", nome: "Púlpito Clássico 115cm", preco: 1800.00, descricao: "Púlpito em acrílico", imagem: "https://placehold.co/400x300/7c3aed/white?text=Pulpito", categoria: "Púlpitos" },
+  { id: 7, sku: "BAL-MDF-100", nome: "Balcão Desmontável 100cm", preco: 1800.00, descricao: "Balcão para eventos", imagem: "https://placehold.co/400x300/7c3aed/white?text=Balcao", categoria: "Balcões", badge: "Mais vendido" },
+  { id: 8, sku: "TRO-MIX-M", nome: "Troféu Mix Médio", preco: 89.90, descricao: "Troféu multicamadas", imagem: "https://placehold.co/400x300/7c3aed/white?text=Trofeu", categoria: "Troféus" }
+];
+
+// Componente Principal
+export default function App() {
   const [cart, setCart] = useState([]);
   const [showCart, setShowCart] = useState(false);
-  const [cartCount, setCartCount] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState('todos');
 
-  const addItem = (product) => {
-    setCart([...cart, { ...product, quantity: 1 }]);
-    setCartCount(cartCount + 1);
-    alert(`✅ ${product.nome} adicionado ao carrinho!`);
+  const categories = ['todos', ...new Set(products.map(p => p.categoria))];
+  const filteredProducts = selectedCategory === 'todos' ? products : products.filter(p => p.categoria === selectedCategory);
+  const cartCount = cart.length;
+  const cartTotal = cart.reduce((sum, item) => sum + item.preco, 0);
+
+  const addToCart = (product) => {
+    setCart([...cart, product]);
+    alert(`✅ ${product.nome} adicionado!`);
   };
 
-  const removeItem = (index) => {
+  const removeFromCart = (index) => {
     const newCart = [...cart];
     newCart.splice(index, 1);
     setCart(newCart);
-    setCartCount(cartCount - 1);
   };
-
-  const total = cart.reduce((sum, item) => sum + (item.preco * item.quantity), 0);
 
   const handleWhatsApp = () => {
-    let message = `🛒 *PEDIDO PRESTIGE VISUAL*%0A%0A`;
-    message += `*PRODUTOS:*%0A`;
-    cart.forEach(item => {
-      message += `• ${item.quantity}x ${item.nome} - R$ ${(item.preco * item.quantity).toFixed(2)}%0A`;
-    });
-    message += `%0A📦 *TOTAL:* R$ ${total.toFixed(2)}%0A`;
-    window.open(`https://wa.me/5511922018290?text=${message}`, '_blank');
+    let msg = `🛒 *PEDIDO PRESTIGE VISUAL*%0A%0A`;
+    cart.forEach(item => msg += `• ${item.nome} - R$ ${item.preco.toFixed(2)}%0A`);
+    msg += `%0A📦 *TOTAL:* R$ ${cartTotal.toFixed(2)}%0A`;
+    window.open(`https://wa.me/5511922018290?text=${msg}`, '_blank');
   };
 
-  if (!showCart) {
+  if (showCart) {
     return (
-      <div className="flex items-center gap-4">
-        <button 
-          onClick={() => setShowCart(true)} 
-          className="relative bg-primary text-white px-4 py-2 rounded-lg hover:bg-purple-700"
-        >
-          🛒 Carrinho
-          {cartCount > 0 && (
-            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-              {cartCount}
-            </span>
+      <div className="min-h-screen bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <button onClick={() => setShowCart(false)} className="text-primary mb-4">← Voltar</button>
+          <h1 className="text-3xl font-bold mb-6">Meu Carrinho</h1>
+          {cart.length === 0 ? <p>Carrinho vazio</p> : (
+            <>
+              {cart.map((item, i) => (
+                <div key={i} className="bg-white p-4 rounded-lg shadow mb-2 flex justify-between">
+                  <div><h3>{item.nome}</h3><p>R$ {item.preco.toFixed(2)}</p></div>
+                  <button onClick={() => removeFromCart(i)} className="text-red-500">Remover</button>
+                </div>
+              ))}
+              <div className="bg-white p-4 rounded-lg shadow mt-4">
+                <div className="flex justify-between font-bold text-xl"><span>Total:</span><span>R$ {cartTotal.toFixed(2)}</span></div>
+                <button onClick={handleWhatsApp} className="w-full mt-4 bg-green-600 text-white py-3 rounded-lg">💬 WhatsApp</button>
+              </div>
+            </>
           )}
-        </button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl max-w-md w-full max-h-[80vh] overflow-auto p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold">Meu Carrinho</h2>
-          <button onClick={() => setShowCart(false)} className="text-gray-500 hover:text-gray-700">✕</button>
+    <div className="min-h-screen bg-gray-50">
+      <header className="bg-white shadow-sm sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+          <div><h1 className="text-2xl font-bold text-primary">Prestige Visual</h1><p className="text-sm">Comunicação Visual e Gráfica</p></div>
+          <button onClick={() => setShowCart(true)} className="relative bg-primary text-white px-4 py-2 rounded-lg">
+            🛒 Carrinho
+            {cartCount > 0 && <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 text-xs">{cartCount}</span>}
+          </button>
         </div>
+      </header>
+
+      <main className="max-w-7xl mx-auto px-4 py-12">
+        <div className="text-center mb-12"><h2 className="text-4xl font-bold mb-4">Nossos Produtos</h2></div>
         
-        {cart.length === 0 ? (
-          <p className="text-center py-8 text-gray-500">Carrinho vazio</p>
-        ) : (
-          <>
-            {cart.map((item, index) => (
-              <div key={index} className="flex gap-3 mb-4 pb-4 border-b">
-                <img src={item.imagem} alt={item.nome} className="w-16 h-16 object-cover rounded" />
-                <div className="flex-1">
-                  <h4 className="font-semibold">{item.nome}</h4>
-                  <p className="text-sm text-gray-500">R$ {item.preco.toFixed(2)}</p>
-                  <p className="text-sm">Quantidade: {item.quantity}</p>
-                </div>
-                <div className="font-semibold">R$ {(item.preco * item.quantity).toFixed(2)}</div>
-                <button onClick={() => removeItem(index)} className="text-red-500 text-sm">Remover</button>
-              </div>
-            ))}
-            
-            <div className="border-t pt-4 mt-4">
-              <div className="flex justify-between font-bold text-lg mb-4">
-                <span>Total:</span>
-                <span className="text-primary">R$ {total.toFixed(2)}</span>
-              </div>
-              <button onClick={handleWhatsApp} className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700">
-                💬 Finalizar pelo WhatsApp
-              </button>
-            </div>
-          </>
-        )}
-      </div>
-    </div>
-  );
-}
-
-// Componente de Login
-function LoginModal({ onClose }) {
-  const [email, setEmail] = useState('');
-  const [senha, setSenha] = useState('');
-  const [error, setError] = useState('');
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userName, setUserName] = useState('');
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (email === 'cliente@prestigecvisual.com.br' && senha === '123456') {
-      setIsLoggedIn(true);
-      setUserName('Cliente');
-      onClose();
-    } else if (email === 'vendedor@prestigecvisual.com.br' && senha === '123456') {
-      setIsLoggedIn(true);
-      setUserName('Vendedor');
-      onClose();
-    } else if (email === 'admin@prestigecvisual.com.br' && senha === '123456') {
-      setIsLoggedIn(true);
-      setUserName('Administrador');
-      onClose();
-    } else {
-      setError('E-mail ou senha inválidos');
-    }
-  };
-
-  return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl max-w-md w-full p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold">Entrar</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">✕</button>
-        </div>
-        {error && <div className="bg-red-100 text-red-700 p-3 rounded-lg mb-4">{error}</div>}
-        <form onSubmit={handleSubmit}>
-          <input 
-            type="email" 
-            placeholder="E-mail" 
-            value={email} 
-            onChange={(e) => setEmail(e.target.value)} 
-            className="w-full p-3 border rounded-lg mb-3" 
-            required 
-          />
-          <input 
-            type="password" 
-            placeholder="Senha" 
-            value={senha} 
-            onChange={(e) => setSenha(e.target.value)} 
-            className="w-full p-3 border rounded-lg mb-4" 
-            required 
-          />
-          <button type="submit" className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-purple-700">
-            Entrar
-          </button>
-        </form>
-        <p className="text-center text-sm text-gray-500 mt-4">
-          Demo: cliente@prestigecvisual.com.br / 123456
-        </p>
-      </div>
-    </div>
-  );
-}
-
-// Header
-function Header({ isLoggedIn, userName, onLogout, onShowLogin }) {
-  return (
-    <header className="bg-white shadow-sm sticky top-0 z-40">
-      <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center flex-wrap gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-primary">Prestige Visual</h1>
-          <p className="text-sm text-gray-500">Comunicação Visual e Gráfica</p>
-        </div>
-        <div className="flex items-center gap-4">
-          {isLoggedIn ? (
-            <div className="flex items-center gap-3">
-              <span className="text-sm text-gray-600">Olá, {userName}</span>
-              <button onClick={onLogout} className="text-red-500 hover:text-red-700 text-sm">Sair</button>
-            </div>
-          ) : (
-            <button onClick={onShowLogin} className="border border-primary text-primary px-4 py-2 rounded-lg hover:bg-primary hover:text-white transition">
-              Entrar
+        <div className="flex flex-wrap gap-2 justify-center mb-8">
+          {categories.map(cat => (
+            <button key={cat} onClick={() => setSelectedCategory(cat)} className={`px-4 py-2 rounded-full ${selectedCategory === cat ? 'bg-primary text-white' : 'bg-gray-200'}`}>
+              {cat === 'todos' ? 'Todos' : cat}
             </button>
-          )}
-          <CartComponent />
+          ))}
         </div>
-      </div>
-    </header>
-  );
-}
 
-// Card do Produto
-function ProductCard({ product, onAddToCart }) {
-  return (
-    <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-      <img src={product.imagem} alt={product.nome} className="w-full h-48 object-cover" />
-      <div className="p-4">
-        {product.badge && (
-          <span className="inline-block bg-primary text-white text-xs px-2 py-1 rounded-full mb-2">
-            {product.badge}
-          </span>
-        )}
-        <p className="text-xs text-gray-400 font-mono">{product.sku}</p>
-        <h3 className="font-bold text-lg mt-1">{product.nome}</h3>
-        <p className="text-gray-500 text-sm mt-2">{product.descricao.substring(0, 80)}...</p>
-        <div className="flex justify-between items-center mt-4">
-          <span className="text-2xl font-bold text-primary">
-            R$ {product.preco.toFixed(2)}
-          </span>
-          <button
-            onClick={() => onAddToCart(product)}
-            className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition"
-          >
-            Adicionar 🛒
-          </button>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredProducts.map(prod => (
+            <div key={prod.id} className="bg-white rounded-xl shadow-md overflow-hidden">
+              <img src={prod.imagem} alt={prod.nome} className="w-full h-48 object-cover" />
+              <div className="p-4">
+                {prod.badge && <span className="bg-primary text-white text-xs px-2 py-1 rounded-full">{prod.badge}</span>}
+                <p className="text-xs text-gray-400 mt-1">{prod.sku}</p>
+                <h3 className="font-bold text-lg">{prod.nome}</h3>
+                <p className="text-gray-500 text-sm">{prod.descricao}</p>
+                <div className="flex justify-between items-center mt-4">
+                  <span className="text-2xl font-bold text-primary">R$ {prod.preco.toFixed(2)}</span>
+                  <button onClick={() => addToCart(prod)} className="bg-primary text-white px-4 py-2 rounded-lg">Adicionar</button>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
-      </div>
+      </main>
     </div>
   );
 }
-
-// Página Home
-function Home({ onAddToCart }) {
-  const categories = ['todos', ...new Set(products.map(p => p.categoria))];
-  const [selectedCategory, setSelectedCategory] = useState('todos');
-  
-  const filteredProducts = selectedCategory === 'todos' 
-    ? products 
-    : products.filter(p => p.categoria === selectedCategory);
-
-  return (
-    <main className="max-w-7xl mx-auto px-4 py-12">
-      <div className="text-center mb-12">
-        <h2 className="text-4xl font-bold text-gray-800 mb-4">Nossos Produtos</h2>
-        <p className="text-gray-600 max-w-2xl mx-auto">
-          Qualidade e personalização em acrílico para sua empresa.
-        </p>
-      </div>
-
-      <div className="flex flex-wrap gap-2 justify-center mb-8">
-        {categories.map(cat => (
-          <button
-            key={cat}
-            onClick={() => setSelectedCategory(cat)}
-            className={`px-4 py-2 rounded-full capitalize transition ${
-              selectedCategory === cat
-                ? 'bg-primary text-white'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
-          >
-            {cat === 'todos' ? 'Todos' : cat}
-          </button>
-        ))}
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredProducts.map(product => (
-          <ProductCard key={product.id} product={product} onAddToCart={onAddToCart} />
-        ))}
-      </div>
-      
-      {filteredProducts.length === 0 && (
-        <p className="text-center text-gray-500 py-12">Nenhum produto nesta categoria.</p>
-      )}
-    </main>
-  );
-}
-
-// App Principal
-function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userName, setUserName] = useState('');
-  const [showLogin, setShowLogin] = useState(false);
-  const [cart, setCart] = useState([]);
-
-  const handleAddToCart = (product) => {
-    setCart([...cart, product]);
-  };
-
-  const handleLogin = () => {
-    setShowLogin(true);
-  };
-
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    setUserName('');
-  };
-
-  const handleLoginSuccess = (name) => {
-    setIsLoggedIn(true);
-    setUserName(name);
-    setShowLogin(false);
-  };
-
-  return (
-    <div>
-      <Header 
-        isLoggedIn={isLoggedIn} 
-        userName={userName} 
-        onLogout={handleLogout} 
-        onShowLogin={handleLogin} 
-      />
-      <Home onAddToCart={handleAddToCart} />
-      
-      {showLogin && (
-        <LoginModal 
-          onClose={() => setShowLogin(false)} 
-          onSuccess={handleLoginSuccess}
-        />
-      )}
-    </div>
-  );
-}
-
-export default App;
